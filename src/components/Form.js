@@ -1,17 +1,26 @@
 import React from "react";
 import "../styles/Form.scss";
+import { useForm } from "react-hook-form";
 
 function Form() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => console.log(data);
   return (
     <div className="formCard">
-      <form className="form-bg">
+      <form className="form-bg" onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
-          <div class="row-lg">
+          <div className="row-lg">
             <p className="form-bg__header">opis artystyczny zespołu</p>
             <textarea
               className="form-textarea"
               placeholder="opis artystyczny zespołu..."
+              {...register("text", { required: true, minLength: 200 })}
             />
+            {errors.text && <p>opis za krótki</p>}
           </div>
         </div>
         <div className="row">
@@ -22,6 +31,7 @@ function Form() {
                 className="form-control"
                 type="email"
                 placeholder="-"
+                {...register("email")}
               ></input>
             </div>
             <div className="row-md">
@@ -29,8 +39,11 @@ function Form() {
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
-                  <input className="form-control-file" type="file"></input>
-                  <div className="text-input-file"></div>
+                  <input
+                    className="form-control-file"
+                    type="file"
+                    {...register("picture")}
+                  ></input>
                 </div>
               </div>
             </div>
@@ -39,8 +52,11 @@ function Form() {
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
-                  <input className="form-control-file" type="file"></input>
-                  <div className="text-input-file"></div>
+                  <input
+                    className="form-control-file"
+                    type="file"
+                    {...register("statement")}
+                  ></input>
                 </div>
               </div>
             </div>
@@ -52,6 +68,7 @@ function Form() {
                 className="form-control"
                 type="text"
                 placeholder="-"
+                {...register("signature")}
               ></input>
             </div>
             <div className="row-md">
@@ -59,14 +76,17 @@ function Form() {
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
-                  <input className="form-control-file" type="file"></input>
-                  <div className="text-input-file"></div>
+                  <input
+                    className="form-control-file"
+                    type="file"
+                    {...register("song")}
+                  ></input>
                 </div>
               </div>
             </div>
             <div className="row-md">
               <div className="checkbox-rules">
-                <label for="chceckbox-1"></label>
+                <label htmlFor="chceckbox-1"></label>
                 <input id="chceckbox-1" type="checkbox"></input>
                 <p className="checkbox-rules__text">
                   Zgadzam się z{" "}
@@ -103,6 +123,17 @@ function Form() {
         </div>
       </form>
     </div>
+    // return (
+    //   <form onSubmit={handleSubmit(onSubmit)}>
+    //     <input {...register("firstName")} />
+    //     <select {...register("gender")}>
+    //       <option value="female">female</option>
+    //       <option value="male">male</option>
+    //       <option value="other">other</option>
+    //     </select>
+    //     <input type="submit" />
+    //   </form>
+    // );
   );
 }
 
