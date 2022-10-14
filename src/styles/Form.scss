@@ -1,0 +1,60 @@
+@import "variables";
+.formCard {
+  background-image: url("https://static.prsa.pl/f216babf-e7b0-45e7-a0b5-ba8a4f7434ed.file");
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.form-bg {
+  background-color: rgba(255, 242, 0, 0.9);
+  border: 3px solid #000;
+  padding: 30px;
+}
+.row {
+  display: flex;
+  margin: 0;
+  width: 100%;
+}
+.row-lg {
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.form-bg__header {
+  font-size: 18px;
+  display: inline-block;
+  margin-bottom: 0;
+  position: relative;
+  color: #000;
+  font-family: $font-paragraphs;
+}
+.row-lg textarea {
+  width: calc(100% - 22px);
+  height: 100px;
+  padding: 8px 10px;
+  max-width: 100%;
+  background-color: $bcg-color;
+}
+.row textarea::placeholder {
+  color: $yellow-color;
+  font-family: "Open sans", sans-serif;
+}
+.row-2 {
+  width: 50%;
+  padding: 0 15px;
+}
+.form-bg .form-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.form-bg .form-control {
+  width: calc(100% - 22px);
+  height: 40px;
+  margin-top: 5px;
+  background-color: $bcg-color;
+  border: none;
+  padding: 8px 10px;
+}
