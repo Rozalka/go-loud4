@@ -1,6 +1,7 @@
 import React from "react";
 import "../styles/Form.scss";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 function Form() {
   const {
@@ -8,7 +9,36 @@ function Form() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+
+  const onSubmit = (data) => {
+    const newData = new FormData();
+    newData.append("formGroup", 49);
+    newData.append("firstName", "4-competitor");
+    newData.append("lastName", data.signature);
+    newData.append("nick", "49-advert");
+    newData.append("email", data.email);
+    newData.append("rulesConsent", true);
+    newData.append(
+      "extraFieldsJson",
+      '{"competition": "będzie głośno", "year": 2022}'
+    );
+    newData.append("title0", data.text);
+    // newData.append("songWriters0", "49form");
+    // newData.append("performer0", "49form");
+    newData.append("photos", data.picture.file);
+    newData.append("song0", data.song.file);
+
+    axios
+      .post("https://formularze.polskieradio.pl/saveform", newData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((response) => {
+        console.log(response.newData);
+      })
+      .catch((error) => {
+        console.log(error.newData);
+      });
+  };
   return (
     <div className="formCard">
       <form className="form-bg" onSubmit={handleSubmit(onSubmit)}>
@@ -123,17 +153,6 @@ function Form() {
         </div>
       </form>
     </div>
-    // return (
-    //   <form onSubmit={handleSubmit(onSubmit)}>
-    //     <input {...register("firstName")} />
-    //     <select {...register("gender")}>
-    //       <option value="female">female</option>
-    //       <option value="male">male</option>
-    //       <option value="other">other</option>
-    //     </select>
-    //     <input type="submit" />
-    //   </form>
-    // );
   );
 }
 
