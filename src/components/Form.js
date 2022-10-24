@@ -23,10 +23,9 @@ function Form() {
       '{"competition": "będzie głośno", "year": 2022}'
     );
     newData.append("title0", data.text);
-    // newData.append("songWriters0", "49form");
-    // newData.append("performer0", "49form");
-    newData.append("photos", data.picture.file);
-    newData.append("song0", data.song.file);
+    newData.append("photos", data.picture[0]);
+    newData.append("song0", data.song[0]);
+    newData.append("documents", data.statement[0]);
 
     axios
       .post("https://formularze.polskieradio.pl/saveform", newData, {
@@ -50,7 +49,7 @@ function Form() {
               placeholder="opis artystyczny zespołu..."
               {...register("text", { required: true, minLength: 200 })}
             />
-            {errors.text && <p>opis za krótki</p>}
+            <div className="errors">{errors.text && <p>opis za krótki</p>}</div>
           </div>
         </div>
         <div className="row">
@@ -61,8 +60,11 @@ function Form() {
                 className="form-control"
                 type="email"
                 placeholder="-"
-                {...register("email")}
+                {...register("email", { required: true })}
               ></input>
+              <div className="errors">
+                {errors.email && <p>niewłaściwy email</p>}
+              </div>
             </div>
             <div className="row-md">
               <p className="form-bg__header">Dodaj obrazek</p>
@@ -72,9 +74,12 @@ function Form() {
                   <input
                     className="form-control-file"
                     type="file"
-                    {...register("picture")}
+                    {...register("picture", { required: true })}
                   ></input>
                 </div>
+              </div>
+              <div className="errors">
+                {errors.picture && <p>nie dodano obrazka</p>}
               </div>
             </div>
             <div className="row-md">
@@ -85,9 +90,12 @@ function Form() {
                   <input
                     className="form-control-file"
                     type="file"
-                    {...register("statement")}
+                    {...register("statement", { required: true })}
                   ></input>
                 </div>
+              </div>
+              <div className="errors">
+                {errors.statement && <p>nie dodano oświadczenia</p>}
               </div>
             </div>
           </div>
@@ -98,8 +106,11 @@ function Form() {
                 className="form-control"
                 type="text"
                 placeholder="-"
-                {...register("signature")}
+                {...register("signature", { required: true })}
               ></input>
+              <div className="errors">
+                {errors.signature && <p>uzupełnij podpis</p>}
+              </div>
             </div>
             <div className="row-md">
               <p className="form-bg__header">Dodaj piosenkę</p>
@@ -109,15 +120,22 @@ function Form() {
                   <input
                     className="form-control-file"
                     type="file"
-                    {...register("song")}
+                    {...register("song", { required: true })}
                   ></input>
                 </div>
+              </div>
+              <div className="errors">
+                {errors.song && <p>niewłaściwy plik lub brak pliku</p>}
               </div>
             </div>
             <div className="row-md">
               <div className="checkbox-rules">
-                <label htmlFor="chceckbox-1"></label>
-                <input id="chceckbox-1" type="checkbox"></input>
+                <label htmlFor="chqbx"></label>
+                <input
+                  id="chqbx"
+                  type="checkbox"
+                  {...register("chqbx", { required: true })}
+                ></input>
                 <p className="checkbox-rules__text">
                   Zgadzam się z{" "}
                   <a
@@ -129,6 +147,9 @@ function Form() {
                   </a>{" "}
                   i akceptuję jego postanowienia
                 </p>
+              </div>
+              <div className="errors">
+                {errors.chqbx && <p>zaakceptuj regulamin</p>}
               </div>
               <div className="send-btn__wrapper">
                 <button className="send-btn" type="submit">

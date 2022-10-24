@@ -17,6 +17,10 @@
   margin: 0;
   width: 100%;
 }
+.row-md,
+.row-lg {
+  position: relative;
+}
 .row-lg {
   width: 100%;
   padding-left: 15px;
@@ -57,4 +61,24 @@
   background-color: $bcg-color;
   border: none;
   padding: 8px 10px;
+}
+
+.row-lg .errors,
+.row-md .errors {
+  position: absolute;
+  content: "";
+}
+.row-lg .errors {
+  top: 8px;
+  right: 0px;
+}
+.row-md .errors {
+  top: 8px;
+  right: -15px;
+}
+
+.errors p {
+  padding: 8px 15px;
+  background-color: white;
+  border: 2px solid black;
 }
