@@ -1,14 +1,65 @@
 import React from "react";
 import "../styles/Form.scss";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+
+const schema = yup.object().shape({
+  text: yup
+    .string()
+    .test(
+      "required",
+      "opis zespołu musi zawierać przynajmniej 100 znaków",
+      (value) => value.length >= 100
+    ),
+  email: yup
+    .string()
+    .test("required", "uzupełnij email", (value) => value.length > 0),
+  signature: yup
+    .string()
+    .test("required", "uzupełnij swój podpis", (value) => value.length > 1),
+  picture: yup
+    .mixed()
+    .test("required", "dodaj plik", (value) => value.length > 0)
+    .test("fileSize", "Plik nie może przekraczać 2MB", (value) => {
+      return value.length && value[0].size <= 200000;
+    })
+    .test("type", "tylko pliki png, jpg, jpeg", (value) => {
+      return (
+        value.length &&
+        ["image/png", "image/jpg", "image/jpeg"].includes(value[0].type)
+      );
+    }),
+  statement: yup
+    .mixed()
+    .test("required", "dodaj plik", (value) => value.length > 0)
+    .test("type", "tylko pliki pdf", (value) => {
+      return value.length && ["application/pdf"].includes(value[0].type);
+    }),
+  song: yup
+    .mixed()
+    .test("required", "dodaj plik", (value) => value.length > 0)
+    // .test("fileSize", "Plik nie może przekraczać 10MB", (value) => {
+    //   console.log(value);
+    //   return value.length && value[0].size <= 1000000;
+    // })
+    .test("type", "tylko pliki mp3", (value) => {
+      return (
+        value.length && ["audio/mp3", "audio/mpeg"].includes(value[0].type)
+      );
+    }),
+  chqbx: yup.boolean().test("chqbx", "zaakcepuj regulamin", (value) => {
+    return value;
+  }),
+});
 
 function Form() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
     const newData = new FormData();
@@ -47,9 +98,11 @@ function Form() {
             <textarea
               className="form-textarea"
               placeholder="opis artystyczny zespołu..."
-              {...register("text", { required: true, minLength: 200 })}
+              {...register("text", { required: true })}
             />
-            <div className="errors">{errors.text && <p>opis za krótki</p>}</div>
+            <div className="errors">
+              {errors.text && <p>{errors.text.message}</p>}
+            </div>
           </div>
         </div>
         <div className="row">
@@ -63,7 +116,7 @@ function Form() {
                 {...register("email", { required: true })}
               ></input>
               <div className="errors">
-                {errors.email && <p>niewłaściwy email</p>}
+                {errors.email && <p>{errors.email.message}</p>}
               </div>
             </div>
             <div className="row-md">
@@ -79,7 +132,7 @@ function Form() {
                 </div>
               </div>
               <div className="errors">
-                {errors.picture && <p>nie dodano obrazka</p>}
+                {errors.picture && <p>{errors.picture.message}</p>}
               </div>
             </div>
             <div className="row-md">
@@ -95,7 +148,7 @@ function Form() {
                 </div>
               </div>
               <div className="errors">
-                {errors.statement && <p>nie dodano oświadczenia</p>}
+                {errors.statement && <p>{errors.statement.message}</p>}
               </div>
             </div>
           </div>
@@ -109,7 +162,7 @@ function Form() {
                 {...register("signature", { required: true })}
               ></input>
               <div className="errors">
-                {errors.signature && <p>uzupełnij podpis</p>}
+                {errors.signature && <p>{errors.signature.message}</p>}
               </div>
             </div>
             <div className="row-md">
@@ -125,7 +178,7 @@ function Form() {
                 </div>
               </div>
               <div className="errors">
-                {errors.song && <p>niewłaściwy plik lub brak pliku</p>}
+                {errors.song && <p>{errors.song.message}</p>}
               </div>
             </div>
             <div className="row-md">
@@ -149,7 +202,7 @@ function Form() {
                 </p>
               </div>
               <div className="errors">
-                {errors.chqbx && <p>zaakceptuj regulamin</p>}
+                {errors.chqbx && <p>{errors.chqbx.message}</p>}
               </div>
               <div className="send-btn__wrapper">
                 <button className="send-btn" type="submit">
