@@ -23,7 +23,7 @@ const schema = yup.object().shape({
     .mixed()
     .test("required", "dodaj plik", (value) => value.length > 0)
     .test("fileSize", "Plik nie może przekraczać 2MB", (value) => {
-      return value.length && value[0].size <= 200000;
+      return value.length && value[0].size <= 2000000;
     })
     .test("type", "tylko pliki png, jpg, jpeg", (value) => {
       return (
@@ -40,10 +40,10 @@ const schema = yup.object().shape({
   song: yup
     .mixed()
     .test("required", "dodaj plik", (value) => value.length > 0)
-    // .test("fileSize", "Plik nie może przekraczać 10MB", (value) => {
-    //   console.log(value);
-    //   return value.length && value[0].size <= 1000000;
-    // })
+    .test("fileSize", "Plik nie może przekraczać 10MB", (value) => {
+      console.log(value);
+      return value.length && value[0].size <= 10000000;
+    })
     .test("type", "tylko pliki mp3", (value) => {
       return (
         value.length && ["audio/mp3", "audio/mpeg"].includes(value[0].type)
