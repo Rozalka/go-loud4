@@ -15,6 +15,7 @@ const schema = yup.object().shape({
     ),
   email: yup
     .string()
+    .email("email nie jest poprawny")
     .test("required", "uzupełnij email", (value) => value.length > 0),
   signature: yup
     .string()
