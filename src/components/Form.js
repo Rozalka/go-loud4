@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Form.scss";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -61,9 +61,12 @@ function FormCard() {
     register,
     handleSubmit,
     reset,
+    checked,
     formState: { errors, isSubmitSuccessful },
   } = useForm({ resolver: yupResolver(schema) });
 
+  const defaultChecked = checked ? checked : false;
+  const [isChecked, setIsChecked] = useState(defaultChecked);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isSubmitSuccessful) {
@@ -203,9 +206,12 @@ function FormCard() {
               <div className="checkbox-rules">
                 <label htmlFor="chqbx"></label>
                 <input
+                  className={isChecked ? "checked" : ""}
                   id="chqbx"
                   type="checkbox"
                   {...register("chqbx", { required: true })}
+                  checked={isChecked}
+                  onChange={() => setIsChecked((prev) => !prev)}
                 ></input>
                 <p className="checkbox-rules__text">
                   Zgadzam się z{" "}

@@ -16,8 +16,7 @@
   opacity: 0;
 }
 .form-bg input.form-control-file,
-.form-bg .form-control,
-.form-bg input:valid {
+.form-bg .form-control {
   border: none;
   color: #fff200 !important;
 }
@@ -164,8 +163,18 @@
 }
 .checkbox-rules input {
   position: absolute;
-  top: 0;
-  opacity: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  top: 20px;
+  left: -1px;
+  width: 16px;
+  height: 17px;
+  outline: none;
+  cursor: pointer;
+}
+.checkbox-rules .checked {
+  border: 1px solid #fff200;
+  background: black;
 }
 .statement-box {
   width: 50%;
