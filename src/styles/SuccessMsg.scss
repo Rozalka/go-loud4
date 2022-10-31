@@ -1,0 +1,16 @@
+.form-success {
+  position: absolute;
+  content: "";
+  background-color: white;
+  border: 2px solid black;
+  width: 300px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  top: 150px;
+  left: calc(50% - 150px);
+  text-transform: uppercase;
+}

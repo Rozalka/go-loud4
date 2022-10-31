@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles/Form.scss";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import SuccessMsg from "./SuccessMsg";
 
 const schema = yup.object().shape({
   text: yup
@@ -55,12 +56,22 @@ const schema = yup.object().shape({
   }),
 });
 
-function Form() {
+function FormCard() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm({ resolver: yupResolver(schema) });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isSubmitSuccessful) {
+        reset();
+      }
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [isSubmitSuccessful, reset]);
 
   const onSubmit = (data) => {
     const newData = new FormData();
@@ -95,7 +106,9 @@ function Form() {
       <form className="form-bg" onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
           <div className="row-lg">
-            <p className="form-bg__header">opis artystyczny zespołu</p>
+            <p className="form-bg__header form-bg__required">
+              Opis artystyczny zespołu
+            </p>
             <textarea
               className="form-textarea"
               placeholder="opis artystyczny zespołu..."
@@ -109,7 +122,7 @@ function Form() {
         <div className="row">
           <div className="row-2">
             <div className="row-md">
-              <p className="form-bg__header">Twój email</p>
+              <p className="form-bg__header form-bg__required">Twój email</p>
               <input
                 className="form-control"
                 type="email"
@@ -121,7 +134,7 @@ function Form() {
               </div>
             </div>
             <div className="row-md">
-              <p className="form-bg__header">Dodaj obrazek</p>
+              <p className="form-bg__header form-bg__required">Dodaj obrazek</p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
@@ -137,7 +150,9 @@ function Form() {
               </div>
             </div>
             <div className="row-md">
-              <p className="form-bg__header">Dodaj oświadczenie</p>
+              <p className="form-bg__header form-bg__required">
+                Dodaj oświadczenie
+              </p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
@@ -155,7 +170,7 @@ function Form() {
           </div>
           <div className="row-2">
             <div className="row-md">
-              <p className="form-bg__header">Twój podpis</p>
+              <p className="form-bg__header form-bg__required">Twój podpis</p>
               <input
                 className="form-control"
                 type="text"
@@ -167,7 +182,9 @@ function Form() {
               </div>
             </div>
             <div className="row-md">
-              <p className="form-bg__header">Dodaj piosenkę</p>
+              <p className="form-bg__header form-bg__required">
+                Dodaj piosenkę
+              </p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
                 <div>
@@ -227,8 +244,9 @@ function Form() {
           </div>
         </div>
       </form>
+      {isSubmitSuccessful && <SuccessMsg />}
     </div>
   );
 }
 
-export default Form;
+export default FormCard;
