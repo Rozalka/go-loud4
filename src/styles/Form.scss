@@ -20,6 +20,10 @@
   border: none;
   color: #fff200 !important;
 }
+.input.form-control-file#file-upload-button {
+  background-color: transparent !important;
+  color: transparent !important;
+}
 .form-bg input#file-upload-button {
   color: transparent;
 }
@@ -93,6 +97,7 @@
   padding: 0 20px 0 5px;
   position: relative;
   text-transform: uppercase;
+  cursor: pointer;
 }
 .form-control label::after {
   content: "";
@@ -103,6 +108,9 @@
   position: absolute;
   right: 0;
   top: 15px;
+}
+.file-input-text {
+  padding-left: 10px;
 }
 .row-lg .errors,
 .row-md .errors {

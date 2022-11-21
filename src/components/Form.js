@@ -43,7 +43,6 @@ const schema = yup.object().shape({
     .mixed()
     .test("required", "dodaj plik", (value) => value.length > 0)
     .test("fileSize", "Plik nie może przekraczać 10MB", (value) => {
-      console.log(value);
       return value.length && value[0].size <= 10000000;
     })
     .test("type", "tylko pliki mp3", (value) => {
@@ -61,9 +60,17 @@ function FormCard() {
     register,
     handleSubmit,
     reset,
+    watch,
     checked,
     formState: { errors, isSubmitSuccessful },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      picture: "Nie wybrano pliku",
+      song: "Nie wybrano pliku",
+      statement: "Nie wybrano pliku",
+    },
+  });
 
   const defaultChecked = checked ? checked : false;
   const [isChecked, setIsChecked] = useState(defaultChecked);
@@ -146,6 +153,13 @@ function FormCard() {
                     type="file"
                     {...register("picture", { required: true })}
                   ></input>
+                  {watch("picture")[0].name === undefined ? (
+                    <div className="file-input-text">{watch("picture")}</div>
+                  ) : (
+                    <div className="file-input-text">
+                      {watch("picture")[0].name}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="errors">
@@ -164,6 +178,13 @@ function FormCard() {
                     type="file"
                     {...register("statement", { required: true })}
                   ></input>
+                  {watch("statement")[0].name === undefined ? (
+                    <div className="file-input-text">{watch("statement")}</div>
+                  ) : (
+                    <div className="file-input-text">
+                      {watch("statement")[0].name}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="errors">
@@ -196,6 +217,13 @@ function FormCard() {
                     type="file"
                     {...register("song", { required: true })}
                   ></input>
+                  {watch("song")[0].name === undefined ? (
+                    <div className="file-input-text">{watch("song")}</div>
+                  ) : (
+                    <div className="file-input-text">
+                      {watch("song")[0].name}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="errors">
