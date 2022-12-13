@@ -6,12 +6,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import SuccessMsg from "./SuccessMsg";
 
+const DEFAULT_VALUE = "Nie wybrano pliku";
+
 const schema = yup.object().shape({
   text: yup
     .string()
     .test(
       "required",
-      "opis zespołu musi zawierać przynajmniej 100 znaków",
+      "opis zespołu musi zawierać min. 100 znaków",
       (value) => value.length >= 100
     ),
   email: yup
@@ -21,11 +23,19 @@ const schema = yup.object().shape({
   signature: yup
     .string()
     .test("required", "uzupełnij swój podpis", (value) => value.length > 1),
+  // ---picture test---
   picture: yup
-    .mixed()
-    .test("required", "dodaj plik", (value) => value.length > 0)
+    .mixed({ default: DEFAULT_VALUE })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE;
+    })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE && value.length > 0;
+    })
     .test("fileSize", "Plik nie może przekraczać 2MB", (value) => {
-      return value.length && value[0].size <= 2000000;
+      return (
+        value !== DEFAULT_VALUE && value.length > 0 && value[0].size <= 2000000
+      );
     })
     .test("type", "tylko pliki png, jpg, jpeg", (value) => {
       return (
@@ -33,28 +43,49 @@ const schema = yup.object().shape({
         ["image/png", "image/jpg", "image/jpeg"].includes(value[0].type)
       );
     }),
+  // ---statement test---
   statement: yup
-    .mixed()
-    .test("required", "dodaj plik", (value) => value.length > 0)
+    .mixed({ default: DEFAULT_VALUE })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE;
+    })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE && value.length > 0;
+    })
     .test("type", "tylko pliki pdf", (value) => {
-      return value.length && ["application/pdf"].includes(value[0].type);
+      return (
+        value !== DEFAULT_VALUE &&
+        value.length > 0 &&
+        ["application/pdf"].includes(value[0].type)
+      );
     }),
+  // ---song test---
   song: yup
-    .mixed()
-    .test("required", "dodaj plik", (value) => value.length > 0)
+    .mixed({ default: DEFAULT_VALUE })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE;
+    })
+    .test("required", "dodaj plik", (value) => {
+      return value !== DEFAULT_VALUE && value.length > 0;
+    })
     .test("fileSize", "Plik nie może przekraczać 10MB", (value) => {
-      return value.length && value[0].size <= 10000000;
+      return (
+        value !== DEFAULT_VALUE && value.length > 0 && value[0].size <= 10000000
+      );
     })
     .test("type", "tylko pliki mp3", (value) => {
       return (
-        value.length && ["audio/mp3", "audio/mpeg"].includes(value[0].type)
+        value !== DEFAULT_VALUE &&
+        value.length > 0 &&
+        value[0].size <= 10000000 &&
+        ["audio/mp3", "audio/mpeg"].includes(value[0].type)
       );
     }),
+  // ---checkbox test---
   chqbx: yup.boolean().test("chqbx", "zaakcepuj regulamin", (value) => {
     return value;
   }),
 });
-
 function FormCard() {
   const {
     register,
@@ -66,12 +97,19 @@ function FormCard() {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      picture: "Nie wybrano pliku",
-      song: "Nie wybrano pliku",
-      statement: "Nie wybrano pliku",
+      picture: DEFAULT_VALUE,
+      song: DEFAULT_VALUE,
+      statement: DEFAULT_VALUE,
     },
   });
 
+  const getFilePreview = (elem) => {
+    return (
+      <div className="file-input-text">
+        {watch(elem[0]?.name) === undefined ? watch(elem) : watch(elem)[0].name}
+      </div>
+    );
+  };
   const defaultChecked = checked ? checked : false;
   const [isChecked, setIsChecked] = useState(defaultChecked);
   useEffect(() => {
@@ -111,6 +149,7 @@ function FormCard() {
         console.log(error.newData);
       });
   };
+
   return (
     <div className="formCard">
       <form className="form-bg" onSubmit={handleSubmit(onSubmit)}>
@@ -147,19 +186,14 @@ function FormCard() {
               <p className="form-bg__header form-bg__required">Dodaj obrazek</p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
-                <div>
+                <div className="form-control__wrapper">
                   <input
                     className="form-control-file"
                     type="file"
+                    accept=".png, .jpg, .jpeg"
                     {...register("picture", { required: true })}
                   ></input>
-                  {watch("picture")[0].name === undefined ? (
-                    <div className="file-input-text">{watch("picture")}</div>
-                  ) : (
-                    <div className="file-input-text">
-                      {watch("picture")[0].name}
-                    </div>
-                  )}
+                  {getFilePreview("picture")}
                 </div>
               </div>
               <div className="errors">
@@ -172,13 +206,14 @@ function FormCard() {
               </p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
-                <div>
+                <div className="form-control__wrapper">
                   <input
                     className="form-control-file"
                     type="file"
+                    accept=".pdf, .doc, .docx"
                     {...register("statement", { required: true })}
                   ></input>
-                  {watch("statement")[0].name === undefined ? (
+                  {watch("statement")[0]?.name === undefined ? (
                     <div className="file-input-text">{watch("statement")}</div>
                   ) : (
                     <div className="file-input-text">
@@ -211,13 +246,13 @@ function FormCard() {
               </p>
               <div className="form-group form-control">
                 <label>Przeglądaj</label>
-                <div>
+                <div className="form-control__wrapper">
                   <input
                     className="form-control-file"
                     type="file"
                     {...register("song", { required: true })}
                   ></input>
-                  {watch("song")[0].name === undefined ? (
+                  {watch("song")[0]?.name === undefined ? (
                     <div className="file-input-text">{watch("song")}</div>
                   ) : (
                     <div className="file-input-text">
@@ -232,9 +267,11 @@ function FormCard() {
             </div>
             <div className="row-md">
               <div className="checkbox-rules">
-                <label htmlFor="chqbx"></label>
-                <input
+                <label
+                  htmlFor="chqbx"
                   className={isChecked ? "checked" : ""}
+                ></label>
+                <input
                   id="chqbx"
                   type="checkbox"
                   {...register("chqbx", { required: true })}
@@ -253,7 +290,7 @@ function FormCard() {
                   i akceptuję jego postanowienia
                 </p>
               </div>
-              <div className="errors">
+              <div className="errors checkbox-errors">
                 {errors.chqbx && <p>{errors.chqbx.message}</p>}
               </div>
               <div className="send-btn__wrapper">

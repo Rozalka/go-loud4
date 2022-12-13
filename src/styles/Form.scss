@@ -90,6 +90,9 @@
   border: none;
   padding: 8px 10px 8px 5px;
 }
+.form-control__wrapper {
+  max-width: 285px;
+}
 .form-control label {
   color: #fff;
   border: 2px solid #fff;
@@ -98,6 +101,7 @@
   position: relative;
   text-transform: uppercase;
   cursor: pointer;
+  font-weight: 600;
 }
 .form-control label::after {
   content: "";
@@ -111,6 +115,7 @@
 }
 .file-input-text {
   padding-left: 10px;
+  overflow: hidden;
 }
 .row-lg .errors,
 .row-md .errors {
@@ -125,11 +130,15 @@
   top: 8px;
   right: -15px;
 }
-
+.row-md .checkbox-errors {
+  top: 27px;
+  left: 0;
+}
 .errors p {
   padding: 8px 15px;
   background-color: white;
   border: 2px solid black;
+  display: inline-block;
 }
 .send-btn__wrapper {
   display: flex;
@@ -145,10 +154,11 @@
   font-weight: 600;
   width: 100px;
   height: 34px;
+  z-index: 100;
 }
 .form-bg .checkbox-rules {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   margin: 20px 0 0;
 }
@@ -160,33 +170,34 @@
   color: #000;
 }
 .checkbox-rules label {
-  width: 6px;
+  width: 7px;
   height: 6px;
   background-color: #fff;
-  padding: 6px;
+  padding: 5px;
   border: 2px solid #000;
   position: relative;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  cursor: pointer;
 }
 .checkbox-rules input {
   position: absolute;
   -webkit-appearance: none;
   appearance: none;
-  top: 20px;
-  left: -1px;
-  width: 16px;
-  height: 17px;
   outline: none;
-  cursor: pointer;
 }
-.checkbox-rules .checked {
+.checkbox-rules .checked::after {
+  position: absolute;
+  content: "";
+  top: 2px;
+  left: 2px;
+  height: 10px;
+  width: 10px;
   border: 1px solid #fff200;
   background: black;
 }
 .statement-box {
   width: 50%;
   text-align: right;
+  margin-top: 10px;
 }
 .statement-box a {
   font-weight: 600 !important;
@@ -214,4 +225,138 @@
   width: 11px;
   height: 2px;
   background-color: #000;
+}
+.checkbox-rules__text {
+  margin: 0;
+  padding-left: 10px;
+  font-size: 16px;
+  color: #000;
+  font-weight: 600;
+}
+.checkbox-rules__text a {
+  font-weight: 700 !important;
+}
+@media (max-width: 991px) {
+  .form-bg {
+    padding-bottom: 100px;
+  }
+  .row {
+    flex-direction: column;
+    width: calc(100% - 30px);
+  }
+  .row-2 {
+    width: 100%;
+  }
+  .statement-box {
+    width: 100%;
+    text-align: left;
+  }
+  .checkbox-rules label {
+    width: 6px;
+  }
+  .row-md .checkbox-errors {
+    top: 0px;
+    left: 0;
+    position: relative;
+  }
+  .send-btn__wrapper {
+    position: absolute;
+    bottom: -80px;
+    right: 15px;
+  }
+  .form-control__wrapper {
+    max-width: calc(100% - 135px);
+  }
+}
+@media (max-width: 767px) {
+  .form-bg {
+    padding: 10px;
+    padding-bottom: 100px;
+  }
+  .row {
+    width: 100%;
+  }
+  .row-lg {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .row-2 {
+    padding: 0;
+  }
+  .form-control .form-control {
+    width: 100%;
+  }
+  .form-control label {
+    width: calc(100% - 35px);
+  }
+  .form-bg .form-group.form-control {
+    height: auto;
+    margin-top: 5px;
+    flex-wrap: wrap;
+    padding: 5px 0 5px 5px;
+    width: calc(100% - 5px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+  .form-control__wrapper {
+    max-width: calc(100% - 15px);
+  }
+  .file-input-text {
+    padding-left: 0;
+    margin-top: 5px;
+  }
+  .row-md .errors {
+    right: 0;
+    top: 20px;
+  }
+  .row-md .checkbox-errors {
+    top: 0px;
+  }
+  .checkbox-rules label {
+    width: 3px;
+    height: 2px;
+    padding: 5px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+  }
+  .checkbox-rules .checked::after {
+    top: 0;
+    left: 0;
+  }
+  .checkbox-rules input {
+    top: 2px;
+    left: -1px;
+    width: 12px;
+    height: 12px;
+  }
+  .statement-box {
+    margin-top: 5px;
+  }
+  .statement-box span {
+    width: 12px;
+    height: 12px;
+  }
+  .statement-box span::after {
+    top: 5px;
+    left: 8px;
+  }
+  .send-btn__wrapper {
+    bottom: -110px;
+  }
+  .errors p {
+    font-size: 14px;
+    padding: 5px 8px;
+  }
+}
+@media (max-width: 600px) {
+  .row .row-lg .errors {
+    right: 0px;
+    bottom: -10px;
+    top: unset;
+  }
+  .row-lg textarea {
+    padding-bottom: 30px;
+  }
 }
