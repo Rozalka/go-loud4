@@ -43,6 +43,7 @@ const schema = yup.object().shape({
         ["image/png", "image/jpg", "image/jpeg"].includes(value[0].type)
       );
     }),
+
   // ---statement test---
   statement: yup
     .mixed({ default: DEFAULT_VALUE })
@@ -83,7 +84,7 @@ const schema = yup.object().shape({
     }),
   // ---checkbox test---
   chqbx: yup.boolean().test("chqbx", "zaakcepuj regulamin", (value) => {
-    return value;
+    return value === true;
   }),
 });
 function FormCard() {
@@ -92,7 +93,6 @@ function FormCard() {
     handleSubmit,
     reset,
     watch,
-    checked,
     formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(schema),
@@ -102,52 +102,88 @@ function FormCard() {
       statement: DEFAULT_VALUE,
     },
   });
+  const [isImageCorrectSize, setIsImageCorrectSize] = useState(false);
 
-  const getFilePreview = (elem) => {
-    return (
-      <div className="file-input-text">
-        {watch(elem[0]?.name) === undefined ? watch(elem) : watch(elem)[0].name}
-      </div>
-    );
-  };
-  const defaultChecked = checked ? checked : false;
-  const [isChecked, setIsChecked] = useState(defaultChecked);
+  // const getFilePreview = (elem) => {
+  //   return (
+  //     <div className="file-input-text">
+  //       {watch(elem[0]?.name) === undefined ? watch(elem) : watch(elem)[0].name}
+  //       ;
+  //     </div>
+  //   );
+  // };
+
+  const [isChecked, setIsChecked] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isSubmitSuccessful) {
         reset();
       }
     }, 5000);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [isSubmitSuccessful, reset]);
 
-  const onSubmit = (data) => {
-    const newData = new FormData();
-    newData.append("formGroup", 49);
-    newData.append("firstName", "4-competitor");
-    newData.append("lastName", data.signature);
-    newData.append("nick", "49-advert");
-    newData.append("email", data.email);
-    newData.append("rulesConsent", true);
-    newData.append(
-      "extraFieldsJson",
-      '{"competition": "będzie głośno", "year": 2022}'
-    );
-    newData.append("title0", data.text);
-    newData.append("photos", data.picture[0]);
-    newData.append("song0", data.song[0]);
-    newData.append("documents", data.statement[0]);
+  const checkIfImageCorrect = (file) => {
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        if (img.width >= 1200 && img.height >= 660) {
+          console.log(img.width, img.height, "good");
+          setIsImageCorrectSize(true);
+        } else {
+          console.log("bad");
+          setIsImageCorrectSize(false);
+        }
+      };
+      img.src = reader.result;
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
-    axios
-      .post("https://formularze.polskieradio.pl/saveform", newData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        console.log(response.newData);
-      })
-      .catch((error) => {
-        console.log(error.newData);
-      });
+  useEffect(() => {
+    if (watch("picture") !== DEFAULT_VALUE) {
+      checkIfImageCorrect(watch("picture")[0]);
+    }
+    // eslint-disable-next-line
+  }, [watch("picture")]);
+
+  const onSubmit = (data) => {
+    if (isImageCorrectSize) {
+      const newData = new FormData();
+      newData.append("formGroup", 49);
+      newData.append("firstName", "4-competitor");
+      newData.append("lastName", data.signature);
+      newData.append("nick", "49-advert");
+      newData.append("email", data.email);
+      newData.append("rulesConsent", true);
+      newData.append(
+        "extraFieldsJson",
+        '{"competition": "będzie głośno", "year": 2022}'
+      );
+      newData.append("title0", data.text);
+      newData.append("photos", data.picture[0]);
+      newData.append("song0", data.song[0]);
+      newData.append("documents", data.statement[0]);
+
+      axios
+        .post("https://formularze.polskieradio.pl/saveform", newData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          console.log(response.newData);
+        })
+        .catch((error) => {
+          console.log(error.newData);
+        });
+    } else {
+      alert("Zdjęcie musi mieć rozmiar 1200x600");
+    }
   };
 
   return (
@@ -193,7 +229,16 @@ function FormCard() {
                     accept=".png, .jpg, .jpeg"
                     {...register("picture", { required: true })}
                   ></input>
-                  {getFilePreview("picture")}
+                  {/* <div className="file-input-text">
+                    {getFilePreview("picture")}
+                  </div> */}
+                  {watch("picture")[0]?.name === undefined ? (
+                    <div className="file-input-text">{watch("picture")}</div>
+                  ) : (
+                    <div className="file-input-text">
+                      {watch("picture")[0].name}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="errors">
@@ -267,16 +312,13 @@ function FormCard() {
             </div>
             <div className="row-md">
               <div className="checkbox-rules">
-                <label
-                  htmlFor="chqbx"
-                  className={isChecked ? "checked" : ""}
-                ></label>
+                <label htmlFor="chqbx"></label>
                 <input
                   id="chqbx"
                   type="checkbox"
                   {...register("chqbx", { required: true })}
-                  checked={isChecked}
-                  onChange={() => setIsChecked((prev) => !prev)}
+                  className={isChecked ? "checked" : ""}
+                  onClick={() => setIsChecked((isChecked) => !isChecked)}
                 ></input>
                 <p className="checkbox-rules__text">
                   Zgadzam się z{" "}
