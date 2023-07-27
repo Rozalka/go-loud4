@@ -123,6 +123,7 @@ function FormCard() {
     }, 5000);
     return () => {
       clearTimeout(timer);
+      setIsChecked(false);
     };
   }, [isSubmitSuccessful, reset]);
 
