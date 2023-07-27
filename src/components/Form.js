@@ -93,6 +93,7 @@ function FormCard() {
     handleSubmit,
     reset,
     watch,
+    setError,
     formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(schema),
@@ -114,6 +115,13 @@ function FormCard() {
   // };
 
   const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    setError("picture", {
+      type: "dimentions",
+      message: "Zdjęcie musi mieć min 1200x660px",
+    });
+  }, [setError]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -228,7 +236,9 @@ function FormCard() {
                     className="form-control-file"
                     type="file"
                     accept=".png, .jpg, .jpeg"
-                    {...register("picture", { required: true })}
+                    {...register("picture", {
+                      required: true,
+                    })}
                   ></input>
                   {/* <div className="file-input-text">
                     {getFilePreview("picture")}
@@ -243,7 +253,9 @@ function FormCard() {
                 </div>
               </div>
               <div className="errors">
-                {errors.picture && <p>{errors.picture.message}</p>}
+                {errors.picture && !isImageCorrectSize && (
+                  <p>{errors.picture.message}</p>
+                )}
               </div>
             </div>
             <div className="row-md">
