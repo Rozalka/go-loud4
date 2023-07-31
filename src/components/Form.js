@@ -13,8 +13,8 @@ const schema = yup.object().shape({
     .string()
     .test(
       "required",
-      "opis zespołu musi zawierać min. 100 znaków",
-      (value) => value.length >= 100
+      "opis zespołu musi zawierać min. 160 znaków",
+      (value) => value.length >= 160
     ),
   email: yup
     .string()
@@ -117,13 +117,6 @@ function FormCard() {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    setError("picture", {
-      type: "dimentions",
-      message: "Zdjęcie musi mieć min 1200x660px",
-    });
-  }, [setError]);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
       if (isSubmitSuccessful) {
         reset();
@@ -146,6 +139,10 @@ function FormCard() {
         } else {
           console.log("bad");
           setIsImageCorrectSize(false);
+          setError("picture", {
+            type: "dimentions",
+            message: "Zdjęcie musi mieć min 1200x660px",
+          });
         }
       };
       img.src = reader.result;
@@ -252,10 +249,9 @@ function FormCard() {
                   )}
                 </div>
               </div>
+
               <div className="errors">
-                {errors.picture && !isImageCorrectSize && (
-                  <p>{errors.picture.message}</p>
-                )}
+                {errors.picture && <p>{errors.picture.message}</p>}
               </div>
             </div>
             <div className="row-md">
