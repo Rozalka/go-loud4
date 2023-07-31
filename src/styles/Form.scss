@@ -60,7 +60,7 @@
   position: absolute;
   right: -12px;
   top: -2px;
-  color: red;
+  color: #e31936;
 }
 .row-lg textarea {
   width: calc(100% - 22px);
@@ -123,17 +123,14 @@
   content: "";
 }
 .row-lg .errors {
-  // top: 8px;
   bottom: -30px;
   right: 0px;
 }
 .row-md .errors {
-  // top: 8px;
   bottom: -30px;
   right: -15px;
 }
 .row-md .checkbox-errors {
-  // top: 27px;
   top: 36px;
   left: 0;
 }
@@ -319,7 +316,6 @@
   }
   .row-md .errors {
     right: 0;
-    // top: 20px;
     bottom: -35px;
   }
   .row-md .checkbox-errors {
@@ -367,7 +363,6 @@
   .row .row-lg .errors {
     right: 0px;
     bottom: -30px;
-    // top: unset;
   }
   .row-lg textarea {
     padding-bottom: 30px;
