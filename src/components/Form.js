@@ -64,7 +64,7 @@ const schema = yup.object().shape({
   song: yup
     .mixed({ default: DEFAULT_VALUE })
     .test("required", "dodaj plik", (value) => {
-      return value !== DEFAULT_VALUE;
+      return value !== DEFAULT_VALUE || value.length !== 0;
     })
     .test("required", "dodaj plik", (value) => {
       return value !== DEFAULT_VALUE && value.length > 0;
@@ -96,6 +96,8 @@ function FormCard() {
     setError,
     formState: { errors, isSubmitSuccessful },
   } = useForm({
+    // mode: "onChange",
+    shouldFocusError: true,
     resolver: yupResolver(schema),
     defaultValues: {
       picture: DEFAULT_VALUE,
@@ -103,28 +105,19 @@ function FormCard() {
       statement: DEFAULT_VALUE,
     },
   });
+
   const [isImageCorrectSize, setIsImageCorrectSize] = useState(false);
-
-  // const getFilePreview = (elem) => {
-  //   return (
-  //     <div className="file-input-text">
-  //       {watch(elem[0]?.name) === undefined ? watch(elem) : watch(elem)[0].name}
-  //       ;
-  //     </div>
-  //   );
-  // };
-
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isSubmitSuccessful) {
         reset();
+        setIsChecked(false);
       }
     }, 5000);
     return () => {
       clearTimeout(timer);
-      setIsChecked(false);
     };
   }, [isSubmitSuccessful, reset]);
 
@@ -134,14 +127,15 @@ function FormCard() {
       const img = new Image();
       img.onload = () => {
         if (img.width >= 1200 && img.height >= 660) {
-          console.log(img.width, img.height, "good");
+          console.log("good:)");
+          setError("picture", errors.picture);
           setIsImageCorrectSize(true);
         } else {
           console.log("bad");
           setIsImageCorrectSize(false);
           setError("picture", {
             type: "dimentions",
-            message: "Zdjęcie musi mieć min 1200x660px",
+            message: "Zdjęcie powinno mieć rozmiar minimum 1200x660px",
           });
         }
       };
@@ -157,7 +151,9 @@ function FormCard() {
       checkIfImageCorrect(watch("picture")[0]);
     }
     // eslint-disable-next-line
-  }, [watch("picture")]);
+  }, [watch("picture")[0]]);
+
+  console.log(isImageCorrectSize, "test");
 
   const onSubmit = (data) => {
     if (isImageCorrectSize) {
@@ -188,7 +184,7 @@ function FormCard() {
           console.log(error.newData);
         });
     } else {
-      alert("Zdjęcie musi mieć rozmiar 1200x600");
+      alert("Popraw błąd");
     }
   };
 
@@ -237,11 +233,8 @@ function FormCard() {
                       required: true,
                     })}
                   ></input>
-                  {/* <div className="file-input-text">
-                    {getFilePreview("picture")}
-                  </div> */}
                   {watch("picture")[0]?.name === undefined ? (
-                    <div className="file-input-text">{watch("picture")}</div>
+                    <div className="file-input-text">{DEFAULT_VALUE}</div>
                   ) : (
                     <div className="file-input-text">
                       {watch("picture")[0].name}
@@ -268,7 +261,7 @@ function FormCard() {
                     {...register("statement", { required: true })}
                   ></input>
                   {watch("statement")[0]?.name === undefined ? (
-                    <div className="file-input-text">{watch("statement")}</div>
+                    <div className="file-input-text">{DEFAULT_VALUE}</div>
                   ) : (
                     <div className="file-input-text">
                       {watch("statement")[0].name}
@@ -307,7 +300,7 @@ function FormCard() {
                     {...register("song", { required: true })}
                   ></input>
                   {watch("song")[0]?.name === undefined ? (
-                    <div className="file-input-text">{watch("song")}</div>
+                    <div className="file-input-text">{DEFAULT_VALUE}</div>
                   ) : (
                     <div className="file-input-text">
                       {watch("song")[0].name}
