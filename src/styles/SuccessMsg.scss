@@ -3,14 +3,44 @@
   content: "";
   background-color: white;
   border: 2px solid black;
-  width: 300px;
-  min-height: 150px;
+  width: 100%;
+  min-height: 65px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  top: 150px;
-  left: calc(50% - 150px);
+  bottom: -35px;
   text-transform: uppercase;
+  font-size: 15px;
+  font-weight: 700;
+  z-index: 5;
+}
+.form-success p {
+  margin: 5px 0;
+}
+@media (max-width: 991px) {
+  .form-success {
+    bottom: -50px;
+    right: -15px;
+    width: 300px;
+  }
+}
+@media (max-width: 767px) {
+  .form-success {
+    // bottom: -50px;
+    right: 0;
+  }
+}
+@media (max-width: 405px) {
+  .form-success {
+    // bottom: -50px;
+    font-size: 13px;
+    width: 250px;
+  }
+}
+@media (max-width: 350px) {
+  .form-success {
+    width: 240px;
+  }
 }

@@ -94,9 +94,8 @@ function FormCard() {
     reset,
     watch,
     setError,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({
-    // mode: "onChange",
     shouldFocusError: true,
     resolver: yupResolver(schema),
     defaultValues: {
@@ -105,21 +104,23 @@ function FormCard() {
       statement: DEFAULT_VALUE,
     },
   });
-
   const [isImageCorrectSize, setIsImageCorrectSize] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isSubmitSuccessful) {
-        reset();
-        setIsChecked(false);
-      }
-    }, 5000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isSubmitSuccessful, reset]);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (isSubmitSuccessful) {
+  //       reset();
+  //       setIsChecked(false);
+  //       setIsSubmitSuccessful(false);
+  //     }
+  //   }, 5000);
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [isSubmitSuccessful, reset]);
 
   const checkIfImageCorrect = (file) => {
     const reader = new FileReader();
@@ -128,7 +129,7 @@ function FormCard() {
       img.onload = () => {
         if (img.width >= 1200 && img.height >= 660) {
           console.log("good:)");
-          setError("picture", errors.picture);
+          // setError("picture", errors?.picture);
           setIsImageCorrectSize(true);
         } else {
           console.log("bad");
@@ -157,6 +158,7 @@ function FormCard() {
 
   const onSubmit = (data) => {
     if (isImageCorrectSize) {
+      setIsLoading(true);
       const newData = new FormData();
       newData.append("formGroup", 49);
       newData.append("firstName", "4-competitor");
@@ -179,12 +181,20 @@ function FormCard() {
         })
         .then((response) => {
           console.log(response.newData);
+          setIsSubmitSuccessful(true);
+          setIsLoading(false);
+          reset();
+          setIsChecked(false);
         })
         .catch((error) => {
           console.log(error.newData);
+          setIsLoading(false);
         });
     } else {
-      alert("Popraw błąd");
+      setError("picture", {
+        type: "dimentions",
+        message: "Zdjęcie powinno mieć rozmiar minimum 1200x660px",
+      });
     }
   };
 
@@ -338,9 +348,21 @@ function FormCard() {
                 {errors.chqbx && <p>{errors.chqbx.message}</p>}
               </div>
               <div className="send-btn__wrapper">
-                <button className="send-btn" type="submit">
-                  Wyślij
-                </button>
+                {!isSubmitSuccessful && (
+                  <button className="send-btn" type="submit">
+                    {isLoading ? (
+                      <div className="wrapper">
+                        <span className="circle circle-1"></span>
+                        <span className="circle circle-2"></span>
+                        <span className="circle circle-3"></span>
+                        <span className="circle circle-4"></span>
+                      </div>
+                    ) : (
+                      "Wyślij"
+                    )}
+                  </button>
+                )}
+                {isSubmitSuccessful && <SuccessMsg />}
               </div>
             </div>
           </div>
@@ -359,7 +381,7 @@ function FormCard() {
           </div>
         </div>
       </form>
-      {isSubmitSuccessful && <SuccessMsg />}
+      {/* {isSubmitSuccessful && <SuccessMsg />} */}
     </div>
   );
 }
