@@ -93,7 +93,7 @@ function FormCard() {
     handleSubmit,
     reset,
     watch,
-    setError,
+    // setCustomError,
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
@@ -108,19 +108,7 @@ function FormCard() {
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (isSubmitSuccessful) {
-  //       reset();
-  //       setIsChecked(false);
-  //       setIsSubmitSuccessful(false);
-  //     }
-  //   }, 5000);
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [isSubmitSuccessful, reset]);
+  const [customError, setCustomError] = useState();
 
   const checkIfImageCorrect = (file) => {
     const reader = new FileReader();
@@ -130,14 +118,12 @@ function FormCard() {
         if (img.width >= 1200 && img.height >= 660) {
           console.log("good:)");
           // setError("picture", errors?.picture);
+          setCustomError("");
           setIsImageCorrectSize(true);
         } else {
           console.log("bad");
           setIsImageCorrectSize(false);
-          setError("picture", {
-            type: "dimentions",
-            message: "Zdjęcie powinno mieć rozmiar minimum 1200x660px",
-          });
+          setCustomError("Zdjęcie powinno mieć rozmiar minimum 1200x660px");
         }
       };
       img.src = reader.result;
@@ -190,11 +176,6 @@ function FormCard() {
           console.log(error.newData);
           setIsLoading(false);
         });
-    } else {
-      setError("picture", {
-        type: "dimentions",
-        message: "Zdjęcie powinno mieć rozmiar minimum 1200x660px",
-      });
     }
   };
 
@@ -255,6 +236,7 @@ function FormCard() {
 
               <div className="errors">
                 {errors.picture && <p>{errors.picture.message}</p>}
+                {customError && !errors.picture && <p>{customError}</p>}
               </div>
             </div>
             <div className="row-md">
@@ -381,7 +363,6 @@ function FormCard() {
           </div>
         </div>
       </form>
-      {/* {isSubmitSuccessful && <SuccessMsg />} */}
     </div>
   );
 }
