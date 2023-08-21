@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import ErrorMsg from "./ErrorMsg";
 import SuccessMsg from "./SuccessMsg";
 
 const DEFAULT_VALUE = "Nie wybrano pliku";
@@ -109,6 +110,7 @@ function FormCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [customError, setCustomError] = useState();
+  const [sendingErrors, setSendingErrors] = useState(false);
 
   const checkIfImageCorrect = (file) => {
     const reader = new FileReader();
@@ -146,6 +148,7 @@ function FormCard() {
     if (isImageCorrectSize) {
       setIsLoading(true);
       setButtonDisabled(true);
+      setSendingErrors(false);
       const newData = new FormData();
       newData.append("formGroup", 49);
       newData.append("firstName", "4-competitor");
@@ -157,7 +160,7 @@ function FormCard() {
         "extraFieldsJson",
         '{"competition": "będzie głośno", "year": 2022}'
       );
-      newData.append("title0", data.text);
+      newData.append("title0", data.text.replace(/</g, " || "));
       newData.append("photos", data.picture[0]);
       newData.append("song0", data.song[0]);
       newData.append("documents", data.statement[0]);
@@ -173,10 +176,12 @@ function FormCard() {
           reset();
           setIsChecked(false);
           setButtonDisabled(false);
+          setSendingErrors(false);
         })
         .catch((error) => {
           console.log(error.newData);
           setIsLoading(false);
+          setSendingErrors(true);
         });
     }
   };
@@ -320,7 +325,7 @@ function FormCard() {
                 <p className="checkbox-rules__text">
                   Zgadzam się z{" "}
                   <a
-                    href="https://static.prsa.pl/5cd599b1-f46b-40e9-9e23-7c8e4b5dae79.pdf"
+                    href="https://static.prsa.pl/caaab129-8df1-455d-9e6d-28d92604191f.pdf"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -352,6 +357,7 @@ function FormCard() {
                   </button>
                 )}
                 {isSubmitSuccessful && <SuccessMsg />}
+                {sendingErrors && <ErrorMsg />}
               </div>
             </div>
           </div>
