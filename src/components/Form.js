@@ -93,7 +93,6 @@ function FormCard() {
     handleSubmit,
     reset,
     watch,
-    // setCustomError,
     formState: { errors },
   } = useForm({
     shouldFocusError: true,
@@ -108,6 +107,7 @@ function FormCard() {
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [customError, setCustomError] = useState();
 
   const checkIfImageCorrect = (file) => {
@@ -145,6 +145,7 @@ function FormCard() {
   const onSubmit = (data) => {
     if (isImageCorrectSize) {
       setIsLoading(true);
+      setButtonDisabled(true);
       const newData = new FormData();
       newData.append("formGroup", 49);
       newData.append("firstName", "4-competitor");
@@ -171,6 +172,7 @@ function FormCard() {
           setIsLoading(false);
           reset();
           setIsChecked(false);
+          setButtonDisabled(false);
         })
         .catch((error) => {
           console.log(error.newData);
@@ -288,6 +290,7 @@ function FormCard() {
                 <div className="form-control__wrapper">
                   <input
                     className="form-control-file"
+                    accept=".mp3"
                     type="file"
                     {...register("song", { required: true })}
                   ></input>
@@ -331,7 +334,11 @@ function FormCard() {
               </div>
               <div className="send-btn__wrapper">
                 {!isSubmitSuccessful && (
-                  <button className="send-btn" type="submit">
+                  <button
+                    disabled={buttonDisabled}
+                    className="send-btn"
+                    type="submit"
+                  >
                     {isLoading ? (
                       <div className="wrapper">
                         <span className="circle circle-1"></span>
