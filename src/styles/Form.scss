@@ -19,6 +19,8 @@
 .form-bg .form-control {
   border: none;
   color: #fff200 !important;
+  font-family: $font-paragraphs;
+  font-size: 16px;
 }
 .input.form-control-file#file-upload-button {
   background-color: transparent !important;
@@ -71,6 +73,7 @@
   background-color: $bcg-color;
   color: #fff200;
   font-family: $font-paragraphs;
+  font-size: 16px;
 }
 .row textarea::placeholder {
   color: $yellow-color;
